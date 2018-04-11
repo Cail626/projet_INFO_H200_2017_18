@@ -1,21 +1,30 @@
 package View;
 
 import Model.Directable;
-import Objects.GameObject;
+import Model.GameObject;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.BorderLayout; 
+import java.awt.Image;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.JFrame;
 
 public class Map extends JPanel {
-
     private ArrayList<GameObject> objects = null;
-
+    private boolean inventoryState;
+    //Nom du fichier contenant l'image
+    private final String impath = "inventory.jpg";
+    //L'image
+    private Image inventory;
+    
     public Map() {
         this.setFocusable(true);
         this.requestFocusInWindow();
+        //On charge l'image dès le lancement du constructeur
+        inventory = getToolkit().getImage(impath);
     }
 
     public void paint(Graphics g) {
@@ -24,9 +33,9 @@ public class Map extends JPanel {
                 int x = i;
                 int y = j;
                 g.setColor(Color.LIGHT_GRAY);
-                g.fillRect(x * 50, y * 50, 48, 48);
+                g.fillRect(x * 50, y * 50, 48, 48); //dessine l'interieur( commnence en haut à droite )
                 g.setColor(Color.BLACK);
-                g.drawRect(x * 50, y * 50, 48, 48);
+                g.drawRect(x * 50, y * 50, 48, 48); //dessine le contour( commnence en haut à droite )
             }
         }
 
@@ -80,13 +89,39 @@ public class Map extends JPanel {
                 g.drawLine(xCenter, yCenter, xCenter + deltaX, yCenter + deltaY);
             }
         }
+        if( getInventoryState() == true){
+        	int width = getWidth();
+        	int height = getHeight();
+        	g.drawImage(inventory, 0, 3*height/4, width, height/4, this);
+        }
+        
     }
 
     public void setObjects(ArrayList<GameObject> objects) {
         this.objects = objects;
     }
 
+    public void switchInventoryState(){
+    	if(inventoryState == true){
+    		inventoryState = false;
+    	}
+    	else{
+    		inventoryState = true;
+    	}
+    }
+    
+    public boolean getInventoryState(){
+    	return inventoryState;
+    }
+    
+    //On change l'affichage de l'inventaire
+    public void showInventory(){
+    	switchInventoryState();
+    	redraw();
+    }
+    
     public void redraw() {
         this.repaint();
     }
+    
 }
