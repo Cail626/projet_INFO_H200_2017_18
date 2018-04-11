@@ -29,6 +29,10 @@ public class Window {
         this.map.redraw();
     }
 
+    public void showInventory(){
+    	this.map.showInventory();
+    }
+    
     public void setKeyListener(KeyListener keyboard) {
         this.map.addKeyListener(keyboard);
     }
