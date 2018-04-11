@@ -1,7 +1,5 @@
 package View;
 
-blablablablagrokfepfojepgfojerzgpjerzpgo
-
 import Model.GameObject;
 
 import java.awt.Color;
