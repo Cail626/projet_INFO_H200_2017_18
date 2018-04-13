@@ -1,12 +1,13 @@
 package View;
 
-import Objects.GameObject;
-
 import java.awt.Color;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+
+import Objects.GameObject;
+
 
 public class Window {
     private Map map = new Map();
@@ -28,12 +29,19 @@ public class Window {
     public void update() {
         this.map.redraw();
     }
-
-    public void showInventory(){
-    	this.map.showInventory();
+    
+    public void moveIc(int direction){
+    	map.moveIc(direction);
+    	this.map.redraw();
+    }
+    
+    public boolean switchInventory(){
+    	boolean inventoryState = map.switchInventoryState();
+    	this.map.redraw();
+    	return inventoryState;
     }
     
     public void setKeyListener(KeyListener keyboard) {
-        this.map.addKeyListener(keyboard);
+    	this.map.addKeyListener(keyboard);
     }
 }
