@@ -107,12 +107,14 @@ public class Game implements DeletableObserver {
     private void mapOption(BufferedReader in) throws IOException{
     	String text;
     	text = in.readLine().trim();
-    	if ("wall".compareTo(text) == 0) {
+    	if ("exitEast".compareTo(text) == 0) {
 	    	for (int i = 0; i < size; i++) {
 	            objects.add(new BlockUnbreakable(i, 0));
 	            objects.add(new BlockUnbreakable(0, i));
 	            objects.add(new BlockUnbreakable(i, size - 1));
-	            objects.add(new BlockUnbreakable(size - 1, i));
+	            if(i!= size/2){
+	            	objects.add(new BlockUnbreakable(size - 1, i));
+	            }
 	        }
     	}
     }
@@ -134,6 +136,10 @@ public class Game implements DeletableObserver {
         player.rotate(x, y);
         if (obstacle == false) {
             player.move(x, y);
+        }
+        //teste si on quitte la map
+        if (nextX == (size - 1) || nextY == (size - 1) ){
+        	System.out.println("map quitte");
         }
         notifyView();
     }
@@ -173,12 +179,17 @@ public class Game implements DeletableObserver {
     	}
     }
     
-    public void showInventory(){
-    	window.showInventory();
+    public boolean switchInventory(){
+    	boolean inventoryState = window.switchInventory();
+    	return inventoryState;
     }
 
     private void notifyView() {
         window.update();
+    }
+    
+    public void moveIc(int direction){
+    	window.moveIc(direction);
     }
 
     public ArrayList<GameObject> getGameObjects() {
