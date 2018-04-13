@@ -1,33 +1,42 @@
 package View;
 
 import Model.Directable;
-import Model.GameObject;
+import Objects.GameObject;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.BorderLayout; 
 import java.awt.Image;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
-import javax.swing.JFrame;
 
 public class Map extends JPanel {
-    private ArrayList<GameObject> objects = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ArrayList<GameObject> objects = null;
     private boolean inventoryState;
-    //Nom du fichier contenant l'image
-    private final String impath = "inventory.jpg";
-    //L'image
-    private Image inventory;
+    private int posIc[]= {1,2};
+    
+    private final int numInvY = 2;
+    private final int numInvX = 5;
+    private final int invWidth = 1000;
+    private final int invHeight = 255;
+    //taille de l'icone
+    private final int side = 60;
     
     public Map() {
         this.setFocusable(true);
         this.requestFocusInWindow();
-        //On charge l'image dès le lancement du constructeur
-        inventory = getToolkit().getImage(impath);
+        posIc[0] = numInvX/2 + 1;
+        posIc[1] = numInvY/2 + 1;
     }
 
     public void paint(Graphics g) {
+    	
+    	 g.setColor(Color.WHITE);
+    	 g.fillRect(0, 0, getWidth(), getHeight() );
         for (int i = 0; i < 20; i++) { // Virer la valeur 20 et parametrer ca
             for (int j = 0; j < 20; j++) {
                 int x = i;
@@ -90,34 +99,71 @@ public class Map extends JPanel {
             }
         }
         if( getInventoryState() == true){
-        	int width = getWidth();
-        	int height = getHeight();
-        	g.drawImage(inventory, 0, 3*height/4, width, height/4, this);
+        	//on charge l'image du fond de l'intentaire
+            Image image = getToolkit().getImage("inventory.jpg");
+        	g.drawImage(image, 0, 3*invHeight, invWidth, invHeight, this);
+        	image = getToolkit().getImage("icone.jpg");
+        	//on dessine le nombre d'emplacements d'inventaire suivant x et y
+        	for(int i=0; i<(numInvX*numInvY); i++){
+        		int xic = i%numInvX + 1;
+        		int yic = i/numInvX + 1;
+        		g.drawImage(image, (xic)*invWidth/(numInvX+1)-side/2, 3*invHeight + (yic)*invHeight/(numInvY+1) - side/2, side, side, this);
+        	}
+        	int xic = posIc[0];
+        	int yic = posIc[1];
+        	//on dessine l'icone sélectionnée
+        	image = getToolkit().getImage("icone_select.jpg");
+        	g.drawImage(image, (xic)*invWidth/(numInvX+1)-side/2, 3*invHeight + (yic)*invHeight/(numInvY+1) - side/2, side, side, this);
         }
         
     }
-
+    //on déplace l'icone sélectionnée
+    public void moveIc(int direction){
+    	switch(direction){
+    	//Right
+    	case 0:
+    		if(posIc[0] < numInvX){
+    			posIc[0] += 1;
+    		}
+    		break;
+    	//Up
+    	case 1:
+    		if(posIc[1] > 1){
+    			posIc[1] -= 1;
+    		}
+    		break;
+    	//Left
+    	case 2:
+    		if(posIc[0] > 1){
+    			posIc[0] -= 1;
+    		}
+    		break;
+    	//Down
+    	case 3:
+    		if(posIc[1] < numInvY){
+    			posIc[1] += 1;
+    		}
+    		break;
+    	}
+    }
+    
     public void setObjects(ArrayList<GameObject> objects) {
         this.objects = objects;
     }
 
-    public void switchInventoryState(){
+    //On change l'affichage de l'inventaire
+    public boolean switchInventoryState(){
     	if(inventoryState == true){
     		inventoryState = false;
     	}
     	else{
     		inventoryState = true;
     	}
+    	return inventoryState;
     }
     
     public boolean getInventoryState(){
     	return inventoryState;
-    }
-    
-    //On change l'affichage de l'inventaire
-    public void showInventory(){
-    	switchInventoryState();
-    	redraw();
     }
     
     public void redraw() {
